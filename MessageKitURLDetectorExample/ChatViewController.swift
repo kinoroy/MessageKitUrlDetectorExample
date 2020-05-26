@@ -21,12 +21,17 @@ struct Message: MessageType {
 
 
 class ChatViewController: MessagesViewController {
-    var messages = [
+    lazy var text: NSMutableAttributedString = {
+        let text = NSMutableAttributedString(string: "Check out this cool link")
+        text.addAttribute(.link, value: URL(string: "https://github.com/MessageKit/MessageKit"), range: NSRange(location: 0, length: text.string.count))
+        return text
+    }()
+    lazy var messages = [
         Message(
             sender: Sender(senderId: "test", displayName: "Test"),
             messageId: "1",
             sentDate: Date(),
-            kind: .text("Check out this cool link: https://github.com/MessageKit/MessageKit")
+            kind: .attributedText(text)
         )
     ]
     
@@ -65,6 +70,9 @@ extension ChatViewController: MessagesDisplayDelegate {
 }
 
 extension ChatViewController: MessageCellDelegate {
+    func didTapMessage(in cell: MessageCollectionViewCell) {
+        print("Tapped message")
+    }
     func didSelectURL(_ url: URL) {
         print("Selected URL \(url.absoluteString)")
     }
